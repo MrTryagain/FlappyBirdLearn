@@ -24,8 +24,9 @@ function GameStartScene:ctor()
     local pipeDown3 = display.newSprite("pipe_down.png")
     local gameOver = display.newSprite("text_game_over.png")
     local score = 0
+    local time = 0.5
     local path = cc.FileUtils:getInstance():fullPathForFilename("StartGameData.txt")
-    self.STATE = "alive"
+    self.time = time
     self.bird = bird
     self.score = score
     self.pipeUp1 = pipeUp1
@@ -35,8 +36,6 @@ function GameStartScene:ctor()
     self.pipeDown2 = pipeDown2
     self.pipeDown3 = pipeDown3
     self.path = path
-
-    addHeight = 0
     posX = 640
     picIndex = 0
     n = 0
@@ -76,11 +75,10 @@ function GameStartScene:ctor()
     
     --全局自定义调度器
     local function onInterval(dt)
-           STATE = self.STATE
-           
-            --下落
-            birdDropSpeed = 0.7
-            pipeMoveSpeed = 2
+        --下落高度及地面移动速度
+            self.time = self.time +0.02
+            birdDropSpeed = 0.5*9.8*self.time*self.time
+            pipeMoveSpeed = 2.5
             birdX,birdY = self.bird:getPosition()
      
             -- 水管移动、在屏幕左边消失时在右边生成，高度随机?????????     
@@ -128,7 +126,7 @@ function GameStartScene:ctor()
             --小鸟死亡，想终止计时器，跳转到结算场景
             if birdY <=120 then 
                 io.writefile(self.path,self.score,w)
-                gameOver:setVisible(true)
+                self:ConvertGameOver()
                 return 
             end         
             if cc.rectIntersectsRect(birdRect,pipeUp1Rect) then
@@ -196,7 +194,8 @@ function GameStartScene:ctor()
         self:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event) 
             print("ok fly")        
             local x,y = self.bird:getPosition()
-            self.bird:setPosition(x,y+10)
+            self.time = 0.5
+            self.bird:setPosition(x,y+20)
         end)
         self:setTouchEnabled(true)   
     end
