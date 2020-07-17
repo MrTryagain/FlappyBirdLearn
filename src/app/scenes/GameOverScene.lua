@@ -4,14 +4,6 @@ end)
 
 function GameOverScene:ctor()
     local score = 0
-    local scoreArray = {}
-    local scoreArray2 = {}
-    for i=0,9 do 
-        scoreArray[i] = display.newSprite("number_score_0"..i..".png")
-    end 
-    for i=0,9 do 
-        scoreArray2[i] = display.newSprite("number_score_0"..i..".png")
-    end 
     local bg_night = display.newSprite("bg_night.png")
     :addTo(self)
     local path = cc.FileUtils:getInstance():fullPathForFilename("StartGameData.txt")
@@ -23,15 +15,33 @@ function GameOverScene:ctor()
     bg_night:setScaleY(display.height/scaleY)
     bg_night:setPosition(display.cx,display.cy)
     local scorePanel = display.newSprite("score_panel.png")
-    :addTo(self)
-    :setPosition(display.cx,display.cy)
-    scoreArray[score]:addTo(self)
+        :addTo(self)
+        :setPosition(display.cx,display.cy)
+    --设置TTF字体
+    local label1 = display.newTTFLabel({
+        text = score,
+        font = "Maeker Felt",
+        size = 32,
+        color = cc.c4b(255,255,255),
+        dimeensions = cc.size(400,200)
+    })
+    label1:addTo(self)
         :setPosition(display.cx+84,display.cy+18)
-    scoreArray2[highestScore]:addTo(self)
+    --设置TTF字体
+    local label2 = display.newTTFLabel({
+        text = highestScore,
+        font = "Maeker Felt",
+        size = 32,
+        color = cc.c4b(255,255,255),
+        dimeensions = cc.size(400,200)
+    })
+    label2:addTo(self)
         :setPosition(display.cx+84,display.cy-24)
     local textOver = display.newSprite("text_game_over.png")
         :setPosition(display.cx,display.cy+150)
         :addTo(self) 
+
+
 end 
 
 --输入得分，修改游戏得分数据，返回最高分
@@ -45,5 +55,13 @@ function GameOverScene:scoreIO(number)
     print(highScore)
     return highScore
 end 
+
+-- function GameOverScene:tap()
+--     --单点触摸事件
+--     startNode:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(event) 
+--         print("restart")        
+--     end)
+--     startNode:setTouchEnabled(true)   
+-- end
 
 return GameOverScene
